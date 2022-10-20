@@ -1,0 +1,72 @@
+.remark-slide .remark-slide-content.title-slide {
+  background-image: url("elixir-first-slide-background.png");
+  background-size: 100%;
+  background-position-y: top;
+}
+
+.title-slide h3 {
+  padding-left: 100px;
+  padding-right:100px;
+}
+
+.remark-slide-content.title-slide p {
+  padding-left: 100px;
+  padding-right:100px;
+  font-size:18px;  
+}
+
+.remark-slide-content {
+  background-image: url("elixir-footer.png");
+  background-size: 100%;
+  background-position-y: bottom;
+}
+
+.remark-slide-content p, .remark-slide-content li {
+  font-size:30px;
+}
+
+.title-slide h1 {
+  margin-top:5.2em;
+}
+
+.remark-slide-number {
+    top: 12px;
+}
+
+.mjx-math {
+  font-size: 100%;
+}
+
+/*
+.smaller-first.split-three > .row:nth-of-type(2) {
+  top:23%;
+}
+
+.smaller-first.split-three > .row:nth-of-type(3) {
+  top:56.333333%;
+}
+*/
+
+.remark-slide-content.inverse {
+  background-image: none;
+  background-color: rgb(79,75,74);
+  color: white;
+  text-shadow: 0 0 20px #333;
+}
+
+.remark-slide-content.inverse.title-slide {
+  background-color: white;
+  color: black;
+  text-shadow: none;
+  
+}
+
+.large_fig img {
+  max-width:95%;
+  max-height:450px;
+}  
+
+.mid_fig img {
+  max-width:95%;
+  max-height:400px;
+}  

@@ -1,0 +1,253 @@
+---
+title: "Interpreting uncertainty in differential expression with DESeq2"
+author: "Martin Modrák\n  Institute of Microbiology of the Czech Academy of Sciences"
+output:
+  xaringan::moon_reader:
+    lib_dir: ./libs
+    css: ["hygge", "middlebury-fonts", "ninjutsu", "elixir.css"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(SBC)
+library(ggplot2)
+library(dplyr)
+theme_set(cowplot::theme_cowplot())
+
+knitr::opts_chunk$set(echo=FALSE, cache = TRUE, fig.width = 4, fig.height=2.5)
+```
+
+
+class: center, middle, inverse
+
+# Background
+
+---
+
+
+# Why confidence intervals?
+
+DESeq2 does a good job with interval hypothesis
+
+--
+
+We might want to order genes by LFC
+
+--
+
+.mid_fig[
+![](bsub_fold_change_RNAp_exp.svg)
+]
+
+---
+
+# Frequentist calibration of CIs
+
+In x% of repetitions of the exact same experiment, x% confidence interval will contain the true value.
+
+???
+
+Assuming the model is correct. Needs to hold for any parameters! -> Worst case, asymptotic results, bounds
+
+---
+
+# Bayesian calibration
+
+Averaged over the prior, x% credible interval will contain the true value x% of the time.
+
+???
+
+Assuming the model is correct. Can be exact.
+
+
+
+---
+
+# The secret frequentists don't want you to know
+
+1) Define likelihood
+
+2) Maximize likelihood
+
+3) ????
+
+4) Profit! 
+
+---
+
+# The secret frequentists don't want you to know
+
+1) Define likelihood
+
+2) Maximize likelihood
+
+3) ~~????~~ Compute Hessian
+
+4) ~~Profit!~~ Assume normality  
+
+--
+
+5) Publish!
+
+---
+
+# Bayesian interpretation of DESeq2
+
+Frequentist models $\simeq$ Bayesian models
+
+--
+
+- Flat priors
+
+- Posterior is normal
+
+
+???
+
+DESeq2 was intended as Empirical Bayes (maybe screenshot).
+Note that this is the same assumption as before!
+
+---
+
+# Priors for the DESeq2 model
+
+$$
+\begin{align}
+y_{g,s} &\sim \mathrm{NegBinomial\_2}(\mu_{g,s} r_s, \frac{1}{\tau_g}) \\
+\mu_{g,s} &= X_s \beta  \\
+\log \tau_g &\sim \mathrm{N} \left(\frac{a}{\mu_{g}} + b, \sigma_\tau \right) \\
+\end{align}
+$$
+
+--
+
+$$
+\beta \sim \mathrm{N}(0,1)
+$$
+
+$$
+\sigma_\tau \sim \mathrm{HalfN(0, 1)} ; a \sim \Gamma(3, 6) ; b \sim \Gamma(4, 2.3)
+$$
+
+???
+
+Note that we are in between estimating dispersion and known dispersion
+
+---
+
+class: center, middle, inverse
+
+# Results
+
+???
+
+Only showing some settings, but results broadly consistent
+
+---
+
+
+# 3 replicates, default settings
+
+- I.e. using the `apeglm` Student's T shrinkage
+
+
+
+.large_fig[
+![](3_apeglm_coverage.png)
+]
+
+
+
+---
+
+# 3 replicates, default settings
+
+Coverage of 95% CI: 91%
+
+.large_fig[
+![](3_apeglm_diff.png)
+]
+
+
+---
+
+# 3 replicates, no shrinkage
+
+Coverage of 95% CI: 94%
+
+.large_fig[
+![](3_none_diff.png)
+]
+
+???
+
+We are kind to the frequentist, because we are not testing all possible values.
+
+---
+
+# 3 replicates, T
+
+Coverage of 95% CI: 98%
+
+.large_fig[
+![](3_apeglm_t_diff.png)
+]
+
+---
+
+# 20 replicates, default settings
+
+Coverage of 95% CI: 93.5%
+
+.large_fig[
+![](20_apeglm_diff.png)
+]
+
+
+---
+
+# Multiple comparisons
+
+Correction for multiple comparisons applies also to CIs!
+
+--
+
+E.g., for the 3 replicates without shrinkage:
+
+95% CI coverage:  94%
+
+95% CI coverage when p < 0.1:  67%
+
+---
+
+# DESeq - conclusions
+
+- The CIs of DESeq2 can be slightly miscalibrated
+
+--
+
+  - Especially with few replicates
+
+--
+
+  - p-values still valid
+
+--
+
+- Bayesian interpretation of DESeq2 results is _somewhat_ possible
+  
+--
+
+- Correct CIs for multiple comparisons
+
+---
+
+# Thank you - Questions?
+
+https://github.com/hyunjimoon/SBC/
+
+This work was supported by ELIXIR CZ research infrastructure project (MEYS Grant No: LM2018131) including access to computing and storage facilities.
