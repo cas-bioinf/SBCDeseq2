@@ -219,7 +219,9 @@ $$
 
 Note that we are in between estimating dispersion and known dispersion
 
-## Sampling from DESeq2
+---
+
+# Sampling from DESeq2
 
 DESeq2 provides standard error (via Hessian)
 
