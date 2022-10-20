@@ -1,8 +1,7 @@
 ---
 title: "SBC & DESeq2"
 date: 2021-09-23
-tags: ["R","Stan","SBC"]
-draft: TRUE
+output: html_document
 ---
   
 Let's setup the environment.
@@ -33,6 +32,8 @@ image_width <- 5
 image_height <- 3
 
 ```
+
+Define an SBC backend using DESeq2 to sample the regression coefficients.
 
 ```{r}
 SBC_backend_DESeq2 <- function(shrink_type = "normal", ..., useT = FALSE) {
@@ -112,6 +113,8 @@ SBC_backend_iid_draws.SBC_backend_DEseq2 <- function(backend) {
 }
 ```
 
+
+Code to simulate data from the DESeq2 model
 
 ```{r}
 generator_single_DEseq2 <- function(N_per_group,

@@ -1,0 +1,1 @@
+- Pair_of_mandarin_ducks.jpg  By Francis C. Franklin, CC-BY-SA 3.0 https://commons.wikimedia.org/wiki/File:Pair_of_mandarin_ducks.jpg

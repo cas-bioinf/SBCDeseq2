@@ -16,6 +16,8 @@ options(htmltools.dir.version = FALSE)
 library(SBC)
 library(ggplot2)
 library(dplyr)
+library(magrittr)
+library(tidyr)
 theme_set(cowplot::theme_cowplot())
 
 knitr::opts_chunk$set(echo=FALSE, cache = TRUE, fig.width = 4, fig.height=2.5)
@@ -24,10 +26,62 @@ knitr::opts_chunk$set(echo=FALSE, cache = TRUE, fig.width = 4, fig.height=2.5)
 
 class: center, middle, inverse
 
-# Background
+# Background - Biology
 
 ---
 
+background-image: url("img-cc/Pair_of_mandarin_ducks.jpg")
+background-position: center
+background-size: cover
+class: inverse
+
+# Differential expression
+
+.img_credit[
+Image by By Francis C. Franklin, Wikimedia Commons CC-BY-SA 3.0
+]
+
+---
+
+# Differential expression 
+
+.large_fig[
+```{r diffexpexample, dpi = 300, out.width="400px"}
+set.seed(445554)
+crossing(data.frame(id = 1:5), data.frame(Condition = c("Control", "Treatment"),
+                                          mu = c(20,50))) %>%
+  mutate(reads = rnbinom(n = n(), mu = mu, size = 3)) %>%
+  ggplot(aes(x = Condition, y = reads)) + geom_point(position = position_jitter(width = 0.2, height = 0, seed = 456))
+```
+]
+
+---
+
+# DESeq2
+
+$$
+\begin{align}
+y_{g,s} &\sim \mathrm{NegBinomial\_2}(\mu_{g,s} r_s, \frac{1}{\tau_g}) \\
+\log(\mu_{g,s}) &= \alpha_g + X_s \beta_g  \\
+\log \tau_g &\sim \mathrm{N} \left(\frac{a}{\mu_{g}} + b, \sigma_\tau \right) \\
+\end{align}
+$$
+
+--
+
+Primary output: p-values for interval hypotheses
+
+???
+
+Bunch of other methods to share dispersion
+
+---
+
+class: center, middle, inverse
+
+# Background - Statistics
+
+---
 
 # Why confidence intervals?
 
@@ -52,18 +106,6 @@ In x% of repetitions of the exact same experiment, x% confidence interval will c
 ???
 
 Assuming the model is correct. Needs to hold for any parameters! -> Worst case, asymptotic results, bounds
-
----
-
-# Bayesian calibration
-
-Averaged over the prior, x% credible interval will contain the true value x% of the time.
-
-???
-
-Assuming the model is correct. Can be exact.
-
-
 
 ---
 
@@ -95,6 +137,45 @@ Assuming the model is correct. Can be exact.
 
 ---
 
+# Bayesian calibration
+
+Averaged over the prior, x% credible interval will contain the true value x% of the time.
+
+???
+
+Assuming the model is correct. Can be exact.
+
+---
+
+# Simulation-based calibration
+
+--
+
+1. Simulate data _exactly_ according to the model
+
+--
+
+1. Fit the model to simulated data and draw $M$ samples from the posterior.
+
+--
+
+2. Take the rank of the true value within the samples
+  - Rank: no. of samples < true value
+
+--
+
+3. Across many simulations, this rank should be uniformly distributed between $0$ and $M$
+
+
+
+---
+
+class: center, middle, inverse
+
+# What I did
+
+---
+
 # Bayesian interpretation of DESeq2
 
 Frequentist models $\simeq$ Bayesian models
@@ -108,7 +189,7 @@ Frequentist models $\simeq$ Bayesian models
 
 ???
 
-DESeq2 was intended as Empirical Bayes (maybe screenshot).
+DESeq2 was intended as Empirical Bayes
 Note that this is the same assumption as before!
 
 ---
@@ -118,7 +199,7 @@ Note that this is the same assumption as before!
 $$
 \begin{align}
 y_{g,s} &\sim \mathrm{NegBinomial\_2}(\mu_{g,s} r_s, \frac{1}{\tau_g}) \\
-\mu_{g,s} &= X_s \beta  \\
+\log(\mu_{g,s}) &= \alpha_g + X_s \beta_g  \\
 \log \tau_g &\sim \mathrm{N} \left(\frac{a}{\mu_{g}} + b, \sigma_\tau \right) \\
 \end{align}
 $$
@@ -126,6 +207,7 @@ $$
 --
 
 $$
+\alpha \sim N(4,2); 
 \beta \sim \mathrm{N}(0,1)
 $$
 
@@ -136,6 +218,15 @@ $$
 ???
 
 Note that we are in between estimating dispersion and known dispersion
+
+## Sampling from DESeq2
+
+DESeq2 provides standard error (via Hessian)
+
+1. Use normal approximation
+
+2. Use T approximation with
+
 
 ---
 
@@ -153,7 +244,6 @@ Only showing some settings, but results broadly consistent
 # 3 replicates, default settings
 
 - I.e. using the `apeglm` Student's T shrinkage
-
 
 
 .large_fig[
@@ -247,6 +337,12 @@ E.g., for the 3 replicates without shrinkage:
 ---
 
 # Thank you - Questions?
+
+https://github.com/cas-bioinf/SBCDESeq2
+
+Talts et al. 2020 (http://www.stat.columbia.edu/~gelman/research/unpublished/sbc.pdf)
+
+`SBC` R package
 
 https://github.com/hyunjimoon/SBC/
 

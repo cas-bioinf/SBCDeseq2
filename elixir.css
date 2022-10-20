@@ -62,6 +62,7 @@
 }
 
 .large_fig img {
+  width:95%;
   max-width:95%;
   max-height:450px;
 }  
@@ -70,3 +71,15 @@
   max-width:95%;
   max-height:400px;
 }  
+
+.img_credit {
+  position:absolute;
+  text-align:right;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+}
+
+.img_credit p {
+  font-size: 75%;
+}
